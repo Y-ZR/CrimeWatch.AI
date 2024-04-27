@@ -49,12 +49,12 @@ export default function Component() {
       </header>
 
       <main className="">
-        <section className="min-h-screen w-full flex items-center border-b-2">
+        <section className="min-h-screen w-full flex items-center">
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 grid-cols-[1fr_1fr]">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
-                  <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-sm">
+                  <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-800">
                     Gemini 1.5 Pro
                   </div>
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
@@ -78,11 +78,11 @@ export default function Component() {
           </div>
         </section>
 
-        <section className="min-h-screen w-full flex items-center border-b-2">
+        <section className="min-h-screen w-full flex items-center bg-gray-100">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">Features</div>
+                <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm dark:bg-gray-800 text-green-800">Features</div>
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Enhance Your Security with AI</h2>
                 <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
                   Our AI-powered surveillance system offers advanced features to detect and analyze incidents, providing
@@ -130,7 +130,7 @@ export default function Component() {
               </h2>
             </div>
             <div className="flex flex-col items-start space-y-4">
-              <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">Security</div>
+              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm dark:bg-gray-800 text-green-800">Security</div>
               <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl/relaxed dark:text-gray-400">
                 Fully managed infrastructure designed to scale dynamically with your traffic, a global edge to ensure
                 your site is fast for every customer, and the tools to monitor every aspect of your app.
