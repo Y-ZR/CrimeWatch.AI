@@ -1,52 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import React from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Header } from "@/components/ui/Header";
 
-export default function Component() {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 10) { // Adjust this value based on your needs
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-
+export default function HomePage() {
   return (
     <div className="flex flex-col min-h-[100dvh]">
-
-      <header className={`fixed top-0 left-0 right-0 px-4 lg:px-6 h-14 flex items-center border-b transition-all duration-300 ${isScrolled ? 'backdrop-blur-md bg-opacity-30' : 'bg-opacity-100'}`}>
-        <Link className="flex items-start justify-center" href="#">
-          <MountainIcon className="h-6 w-6" />
-          <span className="text-lg font-semibold text-gray-800 ml-2">CrimeWatch.AI</span>
-        </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-            Features
-          </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-            Demo
-          </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-            About
-          </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-            Contact
-          </Link>
-        </nav>
-      </header>
+      <Header />
 
       <main className="">
         <section className="min-h-screen w-full flex items-center">
@@ -61,11 +23,15 @@ export default function Component() {
                     CrimeWatch.AI
                   </h1>
                   <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                    Leverage the power of Gemini to enhance security operations. Our software provides real-time
-                    monitoring, demeanor/behaviour recognition, and automated alerts to keep your premises safe.
+                    Leverage the power of Gemini to enhance security operations.
+                    Our software provides real-time monitoring,
+                    demeanor/behaviour recognition, and automated alerts to keep
+                    your premises safe.
                   </p>
                 </div>
-                <Button variant="primary" className="bg-black text-white">Try Demo</Button>
+                <Button variant="primary" className="bg-black text-white">
+                  Try Demo
+                </Button>
               </div>
               <img
                 alt="Hero"
@@ -82,11 +48,16 @@ export default function Component() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm dark:bg-gray-800 text-green-800">Features</div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Enhance Your Security with AI</h2>
+                <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm dark:bg-gray-800 text-green-800">
+                  Features
+                </div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                  Enhance Your Security with AI
+                </h2>
                 <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                  Our AI-powered surveillance system offers advanced features to detect and analyze incidents, providing
-                  you with the tools to improve safety and security.
+                  Our AI-powered surveillance system offers advanced features to
+                  detect and analyze incidents, providing you with the tools to
+                  improve safety and security.
                 </p>
               </div>
             </div>
@@ -96,7 +67,8 @@ export default function Component() {
                 <div className="space-y-2 text-center">
                   <h3 className="font-bold">Behavioural Recognition</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Identify suspicious activites with out behavioural recognition technology using Gemini.
+                    Identify suspicious activites with out behavioural
+                    recognition technology using Gemini.
                   </p>
                 </div>
               </div>
@@ -105,7 +77,8 @@ export default function Component() {
                 <div className="space-y-2 text-center">
                   <h3 className="font-bold">Object Tracking</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Track objects in real-time, allowing you to monitor activity and respond to potential threats.
+                    Track objects in real-time, allowing you to monitor activity
+                    and respond to potential threats.
                   </p>
                 </div>
               </div>
@@ -114,7 +87,8 @@ export default function Component() {
                 <div className="space-y-2 text-center">
                   <h3 className="font-bold">Anomaly Detection</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Our system can detect unusual behavior or events, triggering alerts for further investigation.
+                    Our system can detect unusual behavior or events, triggering
+                    alerts for further investigation.
                   </p>
                 </div>
               </div>
@@ -130,14 +104,18 @@ export default function Component() {
               </h2>
             </div>
             <div className="flex flex-col items-start space-y-4">
-              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm dark:bg-gray-800 text-green-800">Security</div>
+              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm dark:bg-gray-800 text-green-800">
+                Security
+              </div>
               <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl/relaxed dark:text-gray-400">
-                Fully managed infrastructure designed to scale dynamically with your traffic, a global edge to ensure
-                your site is fast for every customer, and the tools to monitor every aspect of your app.
+                Fully managed infrastructure designed to scale dynamically with
+                your traffic, a global edge to ensure your site is fast for
+                every customer, and the tools to monitor every aspect of your
+                app.
               </p>
               <Link
                 className="inline-flex h-9 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
-                href="#"
+                href="/contact"
               >
                 Contact Us
               </Link>
@@ -147,7 +125,9 @@ export default function Component() {
       </main>
 
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6">
-        <p className="text-xs text-gray-500 dark:text-gray-400">© 2024 CrimeWatch.AI Inc. All rights reserved.</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          © 2024 CrimeWatch.AI Inc. All rights reserved.
+        </p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
           <Link className="text-xs hover:underline underline-offset-4" href="#">
             Terms of Service
@@ -158,7 +138,7 @@ export default function Component() {
         </nav>
       </footer>
     </div>
-  )
+  );
 }
 
 function AlertCircleIcon(props) {
@@ -179,9 +159,8 @@ function AlertCircleIcon(props) {
       <line x1="12" x2="12" y1="8" y2="12" />
       <line x1="12" x2="12.01" y1="16" y2="16" />
     </svg>
-  )
+  );
 }
-
 
 function MountainIcon(props) {
   return (
@@ -199,9 +178,8 @@ function MountainIcon(props) {
     >
       <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
     </svg>
-  )
+  );
 }
-
 
 function ShieldCheckIcon(props) {
   return (
@@ -220,9 +198,8 @@ function ShieldCheckIcon(props) {
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
       <path d="m9 12 2 2 4-4" />
     </svg>
-  )
+  );
 }
-
 
 function VideoIcon(props) {
   return (
@@ -241,5 +218,5 @@ function VideoIcon(props) {
       <path d="m22 8-6 4 6 4V8Z" />
       <rect width="14" height="12" x="2" y="6" rx="2" ry="2" />
     </svg>
-  )
+  );
 }
