@@ -2,7 +2,7 @@
 
 export const Form = () => {
   return (
-    <div className="border-2 p-4 tracking-tighter sm:text-s shadow-md w-3/4 rounded-sm">
+    <div className="border-2 p-4 tracking-tighter sm:text-s shadow-md w-3/4 rounded-md">
       <form
         method="POST"
         action="https://www.formbackend.com/f/664decaabbf1c319"

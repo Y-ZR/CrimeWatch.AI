@@ -23,14 +23,6 @@ const ContactPage = () => {
             <div className="mx-15">
               <Form />
             </div>
-
-            {/* <img
-              alt="Hero"
-              className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
-              height="310"
-              src="/stock.jpeg"
-              width="550"
-            /> */}
           </div>
         </div>
       </section>
