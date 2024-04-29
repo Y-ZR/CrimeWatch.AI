@@ -196,8 +196,8 @@ def call_gemini_for_analysis(prompt_type: Literal["real_time", "deeper_analysis"
     return response.text
 
 
-@app.get("/video_analysis/")
-async def video_analysis():
+@app.get("/get_video_analysis/")
+async def get_video_analysis():
     """
     Extract frames from a video, upload frames and make a request to the API to generate JSON analysis of the video.
 
