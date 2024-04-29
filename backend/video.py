@@ -1,5 +1,6 @@
 import os
 import shutil
+from datetime import datetime
 from typing import Literal
 
 import cv2
@@ -30,7 +31,7 @@ class File:
         self.response = response
 
 
-def create_frame_output_dir(output_dir):
+def create_frame_output_dir(output_dir: str) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     else:
@@ -39,7 +40,7 @@ def create_frame_output_dir(output_dir):
 
 
 # Create frames from video
-def extract_frame_from_video(video_file_path):
+def extract_frame_from_video(video_file_path: str) -> None:
     print(f"Extracting {video_file_path} at 1 frame per second. This might take a while...")
     create_frame_output_dir(FRAME_EXTRACTION_DIRECTORY)
     vidcap = cv2.VideoCapture(video_file_path)
@@ -65,16 +66,15 @@ def extract_frame_from_video(video_file_path):
     print(f"Completed video frame extraction!\nExtracted: {frame_count} frames")
 
 
-def get_timestamp(filename):
+def get_timestamp(filename: str):
     parts = filename.split(FRAME_PREFIX)
     if len(parts) != 2:
         return None  # Indicates the filename might be incorrectly formatted
     return parts[1].split('.')[0]
 
 
-def create_prompt(prompt_type: Literal["real_time", "post_crime", "analysis"]):
+def create_prompt(prompt_type: Literal["real_time", "deeper_analysis"], real_time_output: str = None) -> str:
     # Real-time
-    # Anything suspicious?
     if prompt_type == "real_time":
         agent_role = "You are a professional in the security sector." \
                      "You understand crime well and know what to look out for when crime happens and how to analyse them. \n"
@@ -103,10 +103,31 @@ def create_prompt(prompt_type: Literal["real_time", "post_crime", "analysis"]):
                        "Your answer: \n"
 
         return agent_role + query_preamble + query_setup + query_detail
-    # Post-crime
+    # Deeper analysis
+    elif prompt_type == "deeper_analysis":
+        agent_role = "You are a professional in the security sector." \
+                     "You understand crime well and know what to look out for when crime happens and how to analyse them. \n"
+
+        query_preamble = "I will give you a video showing CCTV footage of a retail shop. " \
+                         "The video is split into frames, with 1 frame representing 1 second of time. " \
+                         "The frames, together with its timestamp will be given to you. " \
+                         "You have already given me the real-time analysis of the video and I have identified this video as suspicious. " \
+                         f"This was the real-time analysis that you gave me: {real_time_output}."
+
+        query_setup = "I want you to give me a deeper and more detailed analysis of the video. " \
+                      "Tell me what is happening in the video and give me a detailed analysis of the situation. " \
+                      "Give me remedies to the situation and how to prevent it from happening in the future. "
+
+        query_detail = "Do not use markdown, any other formatting, or any other commentary in your answer. \n" \
+                       "Your answer: \n"
+
+        return agent_role + query_preamble + query_setup + query_detail
+    else:
+        print("Invalid prompt type")
+        raise ValueError("Invalid prompt type")
 
 
-def make_request(prompt, files):
+def make_request(prompt: str, files: list[File]) -> list:
     request = [prompt]
     for file in files:
         request.append(file.timestamp)
@@ -114,18 +135,7 @@ def make_request(prompt, files):
     return request
 
 
-@app.get("/video_analysis/")
-async def video_analysis():
-    """
-    Extract frames from a video, upload frames and make a request to the API to generate JSON analysis of the video.
-
-    :return: Analysis in JSON format
-
-    To run, add GOOGLE_API_KEY to .env file. Then, run the following commands:
-    cd backend
-    uvicorn video:app --reload
-    Go to http://127.0.0.1:8000/docs for FastAPI interface.
-    """
+def call_gemini_for_analysis(prompt_type: Literal["real_time", "deeper_analysis"], real_time_output: str = None) -> str:
     # Check if frames exist
     if not os.path.exists(FRAME_EXTRACTION_DIRECTORY) or len(os.listdir(FRAME_EXTRACTION_DIRECTORY)) == 0:
         print("No frames found. Extracting frames from video...")
@@ -161,7 +171,7 @@ async def video_analysis():
     for n, f in zip(range(len(uploaded_files)), genai.list_files()):
         print(f.uri)
 
-    prompt = create_prompt("real_time")
+    prompt = create_prompt(prompt_type, real_time_output)
 
     # Set the model to Gemini 1.5 Pro.
     model = genai.GenerativeModel(model_name="models/gemini-1.5-pro-latest")
@@ -184,3 +194,44 @@ async def video_analysis():
         print(response.candidates[0].safety_ratings)
 
     return response.text
+
+
+@app.get("/video_analysis/")
+async def video_analysis():
+    """
+    Extract frames from a video, upload frames and make a request to the API to generate JSON analysis of the video.
+
+    :return: Analysis in JSON format
+
+    To run, add GOOGLE_API_KEY to .env file. Then, run the following commands:
+    cd backend
+    uvicorn video:app --reload
+    Go to http://127.0.0.1:8000/docs for FastAPI interface.
+    """
+    start_time = datetime.now()
+    output = call_gemini_for_analysis("real_time")
+    app.state.real_time_output = output
+    end_time = datetime.now()
+    print(f"Time taken: {end_time - start_time}")
+
+    return output
+
+
+@app.get("/get_deeper_analysis/")
+async def get_deeper_analysis():
+    """
+    Get deeper analysis of the video.
+
+    :return: Analysis in JSON format
+
+    To run, add GOOGLE_API_KEY to .env file. Then, run the following commands:
+    cd backend
+    uvicorn video:app --reload
+    Go to http://127.0.0.1:8000/docs for FastAPI interface.
+    """
+    start_time = datetime.now()
+    output = call_gemini_for_analysis("deeper_analysis", app.state.real_time_output)
+    end_time = datetime.now()
+    print(f"Time taken: {end_time - start_time}")
+
+    return output
