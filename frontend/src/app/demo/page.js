@@ -12,7 +12,10 @@ const Demo = () => {
               <div className="space-y-2">
                 <div className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
                   <video controls>
-                    <source src="/Sherlock.mp4" type="video/mp4"></source>
+                    <source
+                      src="https://storage.googleapis.com/generativeai-downloads/data/SherlockJr._10min.mp4"
+                      type="video/mp4"
+                    />
                   </video>
                 </div>
               </div>
