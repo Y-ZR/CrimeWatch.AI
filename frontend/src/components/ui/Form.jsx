@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 export const Form = () => {
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8 w-full min-h-[400px] border">
-      <form className="space-y-4">
+      <form className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
