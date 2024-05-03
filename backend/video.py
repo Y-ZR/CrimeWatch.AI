@@ -8,7 +8,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
-
+import pickle
 # Get api key from .env file
 load_dotenv()
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
@@ -16,6 +16,9 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 cwd = os.getcwd()
 FRAME_EXTRACTION_DIRECTORY = cwd + "/frames"
 FRAME_PREFIX = "_frame"
+UPLOADED_FILES_PATH = cwd + "/uploaded_files.pkl"
+# set to change the maximum number of frames/secs to send into gemini from the full video
+MAX_FRAMES = 15
 
 app = FastAPI()
 
@@ -86,7 +89,7 @@ def create_prompt(prompt_type: Literal["real_time", "deeper_analysis"], real_tim
                          "Common suspicious events are customers stealing items, carrying weapons or threating the staff. " \
                          "I want you to give me detailed analysis of the situation. " \
                          "I expect 3-5 sentences to describe the event in depth. " \
-                         "Events should also last less than 10 seconds. If it is longer than that, split into multiple events. " \
+                         "Events should also last less than 5 seconds. If it is longer than that, split into multiple events. " \
                          "Do not give me analysis of the feelings of the people, just give me straight facts. \n"
 
         # query_example_input = "For example, I could give you a video with a customer stealing a laptop from 00:30 to 00:40 as input. "
@@ -135,41 +138,50 @@ def make_request(prompt: str, files: list[File]) -> list:
     return request
 
 
-def call_gemini_for_analysis(prompt_type: Literal["real_time", "deeper_analysis"], real_time_output: str = None) -> str:
+def call_gemini_for_analysis(prompt_type: Literal["real_time", "deeper_analysis"], real_time_output: str = None, frames: int = 15) -> str:
     # Check if frames exist
     if not os.path.exists(FRAME_EXTRACTION_DIRECTORY) or len(os.listdir(FRAME_EXTRACTION_DIRECTORY)) == 0:
         print("No frames found. Extracting frames from video...")
-        video_file_name = cwd + "/mp4_converted_video.mp4"
+        video_file_name = cwd + "/shoplifting.mp4"
         extract_frame_from_video(video_file_name)
+    if os.path.exists(UPLOADED_FILES_PATH):
+        file = open(UPLOADED_FILES_PATH,'rb')
+        uploaded_files = pickle.load(file)
+        file.close()
+    else:
+        # Process each frame in the output directory
+        files = os.listdir(FRAME_EXTRACTION_DIRECTORY)
+        print(f"Found {len(files)} files in {FRAME_EXTRACTION_DIRECTORY}")
+        files = sorted(files)
+        files_to_upload = []
+        for file in files:
+            files_to_upload.append(File(file_path=os.path.join(FRAME_EXTRACTION_DIRECTORY, file)))
+        print(f"Processed {len(files_to_upload)} files")
 
-    # Process each frame in the output directory
-    files = os.listdir(FRAME_EXTRACTION_DIRECTORY)
-    print(f"Found {len(files)} files in {FRAME_EXTRACTION_DIRECTORY}")
-    files = sorted(files)
-    files_to_upload = []
-    for file in files:
-        files_to_upload.append(File(file_path=os.path.join(FRAME_EXTRACTION_DIRECTORY, file)))
-    print(f"Processed {len(files_to_upload)} files")
+        # Upload the files to the API
+        # Only upload a 10 second slice of files to reduce upload time.
+        # Change full_video to True to upload the whole video.
+        full_video = True
 
-    # Upload the files to the API
-    # Only upload a 10 second slice of files to reduce upload time.
-    # Change full_video to True to upload the whole video.
-    full_video = True
+        uploaded_files = []
+        print(f'Uploading {len(files_to_upload) if full_video else 10} files. This might take a while...')
 
-    uploaded_files = []
-    print(f'Uploading {len(files_to_upload) if full_video else 10} files. This might take a while...')
+        for file in files_to_upload if full_video else files_to_upload[:10]:
+            print(f'Uploading: {file.file_path}...')
+            response = genai.upload_file(path=file.file_path)
+            file.set_file_response(response)
+            uploaded_files.append(file)
 
-    for file in files_to_upload if full_video else files_to_upload[:10]:
-        print(f'Uploading: {file.file_path}...')
-        response = genai.upload_file(path=file.file_path)
-        file.set_file_response(response)
-        uploaded_files.append(file)
+        print(f"Completed file uploads!\nUploaded: {len(uploaded_files)} files")
 
-    print(f"Completed file uploads!\nUploaded: {len(uploaded_files)} files")
+        # List files uploaded in the API
+        for n, f in zip(range(len(uploaded_files)), genai.list_files()):
+            print(f.uri)
+        filehandler = open(UPLOADED_FILES_PATH,"wb")
+        pickle.dump(uploaded_files,filehandler)
+        filehandler.close()
 
-    # List files uploaded in the API
-    for n, f in zip(range(len(uploaded_files)), genai.list_files()):
-        print(f.uri)
+    prompt_files = uploaded_files[:frames]
 
     prompt = create_prompt(prompt_type, real_time_output)
 
@@ -177,7 +189,7 @@ def call_gemini_for_analysis(prompt_type: Literal["real_time", "deeper_analysis"
     model = genai.GenerativeModel(model_name="models/gemini-1.5-pro-latest")
 
     # Make the LLM request
-    request = make_request(prompt, uploaded_files)
+    request = make_request(prompt, prompt_files)
     response = model.generate_content(request,
                                       request_options={"timeout": 600},
                                       safety_settings={
@@ -192,6 +204,7 @@ def call_gemini_for_analysis(prompt_type: Literal["real_time", "deeper_analysis"
         print(response.candidates[0].finish_reason)
         # If the finish reason was SAFETY, the safety ratings have more details.
         print(response.candidates[0].safety_ratings)
+
 
     return response.text
 
@@ -209,7 +222,7 @@ async def get_video_analysis():
     Go to http://127.0.0.1:8000/docs for FastAPI interface.
     """
     start_time = datetime.now()
-    output = call_gemini_for_analysis("real_time")
+    output = call_gemini_for_analysis("real_time", frames = MAX_FRAMES)
     app.state.real_time_output = output
     end_time = datetime.now()
     print(f"Time taken: {end_time - start_time}")
