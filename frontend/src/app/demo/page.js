@@ -12,6 +12,8 @@ import {
 import { useRef, useEffect, useState } from "react";
 import { Header } from "@/components/ui/Header";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@nextui-org/react";
 import {
   Card,
@@ -20,12 +22,21 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import axios from "axios";
-import { getVideoBasicAnalysis } from "../APIEndpoints";
 import { RotatingLines } from "react-loader-spinner";
 import HeatMap from "@uiw/react-heat-map";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 const Demo = () => {
   const videoRef = useRef(null);
@@ -34,6 +45,7 @@ const Demo = () => {
   const [analysis, setAnalysis] = useState("");
   const [timestamp, setTimestamp] = useState("");
   const [isPaused, setIsPaused] = useState(false);
+  const { toast } = useToast();
 
   // hardcoded data (to be removed)
   const data = {
@@ -44,6 +56,20 @@ const Demo = () => {
           "A woman wearing a pink and blue sari is seen taking a laptop from a shelf and putting it into her bag. She looks around cautiously before doing so, suggesting she is aware that she is engaging in suspicious activity. This behavior is indicative of shoplifting, as she is concealing merchandise with the intention of leaving the store without paying for it.",
         time: "00:11-00:14",
       },
+    },
+  };
+
+  const detailedData = {
+    deeper_analysis: {
+      1: {
+        description:
+          "Suspicious behavior noted. The suspect is seen glancing around frequently before taking an item from the shelf.",
+        time: "00:11:18",
+      },
+    },
+    suggestions: {
+      1: "Increase monitoring: Enhance surveillance in high-risk areas where items are more frequently shoplifted.",
+      2: "Staff training: Train employees on identifying suspicious behavior and on safe approaches to confronting potential shoplifters.",
     },
   };
 
@@ -72,7 +98,9 @@ const Demo = () => {
     // Function to call the API
     const fetchBasicVideoAnalysis = async () => {
       try {
-        const response = await axios.get(getVideoBasicAnalysis);
+        const response = await axios.get(
+          "http://13.78.161.149:8000/get_video_analysis/"
+        );
         console.log("API response:", response.data);
       } catch (error) {
         console.error("API call failed:", error);
@@ -185,7 +213,89 @@ const Demo = () => {
                         Suspicious Activity Detected
                       </AlertTitle>
                     </div>
-                    <Button className="h-7">View details</Button>
+                    <Sheet>
+                      <SheetTrigger asChild>
+                        <Button variant="outline" className="h-7">
+                          View details
+                        </Button>
+                      </SheetTrigger>
+                      <SheetContent>
+                        <SheetHeader>
+                          <SheetTitle>Detailed Analysis</SheetTitle>
+                          <SheetDescription>
+                            A detailed analysis of the suspicious activity has
+                            been generated. View details here:
+                          </SheetDescription>
+                        </SheetHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="">
+                            <Label htmlFor="name" className="text-right">
+                              Detailed Description
+                            </Label>
+                            <Textarea
+                              isReadOnly
+                              value={
+                                detailedData.deeper_analysis[1].description
+                              }
+                              classNames={{
+                                base: "w-full",
+                                input: ["text-zinc-600", "text-xs"],
+                              }}
+                            />
+                          </div>
+                          <div className="mt-4">
+                            <Label htmlFor="username" className="text-right">
+                              Suggestion 1
+                            </Label>
+                            <Textarea
+                              isReadOnly
+                              value={detailedData.suggestions[1]}
+                              classNames={{
+                                base: "w-full",
+                                input: ["text-zinc-600", "text-xs"],
+                              }}
+                              style={{
+                                background: "transparent",
+                                border: "none",
+                              }}
+                            />
+                          </div>
+                          <div className="mt-1">
+                            <Label htmlFor="username" className="text-right">
+                              Suggestion 2
+                            </Label>
+                            <Textarea
+                              isReadOnly
+                              value={detailedData.suggestions[2]}
+                              classNames={{
+                                base: "w-full",
+                                input: ["text-zinc-600", "text-xs"],
+                              }}
+                              style={{
+                                background: "transparent",
+                                border: "none",
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <SheetFooter>
+                          <SheetClose asChild>
+                            <Button
+                              className="mt-7"
+                              variant="outline"
+                              onClick={() => {
+                                toast({
+                                  description: "Details saved to database!",
+                                });
+                              }}
+                            >
+                              Save to database
+                            </Button>
+                          </SheetClose>
+                        </SheetFooter>
+                      </SheetContent>
+                    </Sheet>
+                    {/* <Button className="h-7">View details</Button> */}
                   </Alert>
                 ) : (
                   <Alert className="flex items-center">
