@@ -132,7 +132,7 @@ def create_prompt(prompt_type: Literal["real_time", "deeper_analysis"], real_tim
         query_detail = "I want you to give me the output as a JSON dictionary with keys suspicious_activity and events. " \
                        "suspicious_activity is a boolean that is True when there are suspicious activities in the video. " \
                        "events is a dictionary with key as a number and value as a dictionary with keys description and time of the suspicious events that happened. " \
-                       "description should be an array of 3-5 sentences of in depth factual analysis of the situation and time should be the time when it happened eg 00:30. " \
+                       "description should be a dictionary with key as a number and value as an in depth factual analysis of the situation and time should be the time when it happened eg 00:30. " \
                        "If no suspicious events happened, it should be an empty dictionary. " \
                        "Do not use markdown, any other formatting, or any other commentary in your answer. \n" \
                        "Your answer: \n"
@@ -149,11 +149,11 @@ def create_prompt(prompt_type: Literal["real_time", "deeper_analysis"], real_tim
                          "You have already given me the real-time analysis of the video and I have identified this video as suspicious. " \
                          f"This was the real-time analysis that you gave me: {real_time_output}."
 
-        query_setup = "I want you to give me a deeper and more detailed analysis of the video. " \
-                      "Tell me what is happening in the video and give me a detailed analysis of the situation. " \
-                      "Give me remedies to the situation and how to prevent it from happening in the future. "
-
-        query_detail = "Do not use markdown, any other formatting, or any other commentary in your answer. \n" \
+        query_setup = "Now, generate a JSON dictionary for the detailed analysis and suggestions for this situation. "
+        query_detail = "I want you to give me the output as a JSON dictionary with keys deeper_analysis and events. " \
+                       "deeper_analysis is a dictionary with key as a number and value as a dictionary with keys description and time. " \
+                       "suggestions is a dictionary with key as a number and value as a string representing the suggestion. " \
+                       "Do not use markdown, any other formatting, or any other commentary in your answer. \n" \
                        "Your answer: \n"
 
         return agent_role + query_preamble + query_setup + query_detail
