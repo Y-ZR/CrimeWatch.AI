@@ -6,6 +6,8 @@ import {
   X,
   UserRoundCheck,
   CircleCheck,
+  ListCollapse,
+  Clock3,
 } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 import { Header } from "@/components/ui/Header";
@@ -38,23 +40,8 @@ const Demo = () => {
     events: {
       1: {
         description:
-          "At 00:03, a person wearing a black hoodie and a mask covering their face entered the store. The person approaches the cashier who is a woman with brown hair wearing a green jacket. The masked person is holding what looks like a crowbar in their right hand.",
-        time: "00:03-00:04",
-      },
-      2: {
-        description:
-          "At 00:15, the masked person placed the crowbar on the counter. The cashier put her hands up in defense.",
-        time: "00:15-00:16",
-      },
-      3: {
-        description:
-          "At 00:21, the masked person grabbed items from the counter and put them into a bag they were carrying. The cashier still has her hands up.",
-        time: "00:21-00:22",
-      },
-      4: {
-        description:
-          "At 00:31, the masked person exited the store through the front door.",
-        time: "00:31-00:32",
+          "A woman wearing a pink and blue sari is seen taking a laptop from a shelf and putting it into her bag. She looks around cautiously before doing so, suggesting she is aware that she is engaging in suspicious activity. This behavior is indicative of shoplifting, as she is concealing merchandise with the intention of leaving the store without paying for it.",
+        time: "00:11-00:14",
       },
     },
   };
@@ -111,10 +98,10 @@ const Demo = () => {
     };
   }, []);
 
+  // typewriter effect
   const delay = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
-
   var typewriterIdx = 1;
   async function typeWriterEffect(str) {
     if (typewriterIdx > str.length) {
@@ -128,16 +115,10 @@ const Demo = () => {
     await delay(50);
     typeWriterEffect(str);
   }
-
   const handleViewAnalysis = async () => {
     const firstDescription = data.events["1"].description;
     typeWriterEffect(firstDescription);
   };
-
-  // const handlePause = () => {
-  //   setIsPaused(true);
-  //   console.log("Video has been paused.");
-  // };
 
   const handlePause = () => {
     if (!videoRef.current.ended) {
@@ -148,6 +129,12 @@ const Demo = () => {
   const handlePlay = () => {
     setIsPaused(false);
   };
+
+  useEffect(() => {
+    if (isPaused) {
+      handleViewAnalysis();
+    }
+  }, [isPaused]);
 
   return (
     <div>
@@ -162,7 +149,7 @@ const Demo = () => {
                     controls
                     autoplay
                     muted
-                    playsinline
+                    playsInline
                     ref={videoRef}
                     style={{
                       height: "500px",
@@ -186,7 +173,9 @@ const Demo = () => {
                         Suspicious Activity Detected
                       </AlertTitle>
                     </div>
-                    <Button className="h-7">View</Button>
+                    <Button className="h-7" onClick={handleViewAnalysis}>
+                      View
+                    </Button>
                   </Alert>
                 ) : (
                   <Alert className="flex items-center">
@@ -201,69 +190,118 @@ const Demo = () => {
                 <Card className="h-full">
                   <CardHeader>
                     <CardTitle>Analytics</CardTitle>
-
-                    {/* <Textarea
-                      // label="Description"
-                      variant="faded"
-                      labelPlacement="outside"
-                      value={analysis}
-                      classNames={{
-                        base: "w-full",
-                        input: ["text-zinc-600", "text-xs", "border-black"],
-                        inputWrapper: "border-primary",
-                      }}
-                      onValueChange={(analysis) => setAnalysis(analysis)}
-                    /> */}
                   </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center">
-                      <RotatingLines
-                        height="30"
-                        width="30"
-                        radius="9"
-                        color="black"
-                      />
-                      <div className="mx-3">Analysis in progress...</div>
-                    </div>
-                    <div className="flex items-center my-3">
-                      <div className="px-1">
-                        <CircleCheck color="#16A34A" />
-                      </div>
-                      <div className="mx-3">All systems normal</div>
-                    </div>
-                    <div className="flex items-center my-3">
-                      <div className="px-1">
-                        <CircleCheck color="#16A34A" />
-                      </div>
-                      <div className="mx-3">No abnormalities detected</div>
-                    </div>
-                  </CardContent>
-                  <CardContent className="grid gap-4">
-                    <div className=" flex items-center space-x-4 rounded-md border p-4">
-                      <div className="flex-1 space-y-1">
-                        <div className="text-sm font-medium leading-none">
-                          Activity:
+                  {isPaused ? (
+                    <div>
+                      <CardContent>
+                        <div className="flex items-center my-3">
+                          <div className="px-1">
+                            <ListCollapse color="#FF0000" />
+                          </div>
+                          <div className="mx-3">Description: </div>
+                          <Textarea
+                            variant="faded"
+                            labelPlacement="outside"
+                            value={analysis}
+                            classNames={{
+                              base: ["w-full", "h-full"],
+                              input: [
+                                "text-zinc-600",
+                                "text-xs",
+                                "border-black",
+                              ],
+                              inputWrapper: "",
+                            }}
+                            onValueChange={(analysis) => setAnalysis(analysis)}
+                          />
                         </div>
-                        <HeatMap
-                          value={value}
-                          width={600}
-                          style={{
-                            color: "#ad001d",
-                            "--rhm-rect-active": "red",
-                          }}
-                          startDate={new Date("2016/01/01")}
-                          panelColors={{
-                            0: "#f4decd",
-                            2: "#e4b293",
-                            4: "#d48462",
-                            10: "#c2533a",
-                            20: "#ad001d",
-                            30: "#000",
-                          }}
-                        />
-                      </div>
+                        <div className="flex items-center my-3">
+                          <div className="px-1">
+                            <Clock3 color="#FF0000" />
+                          </div>
+                          <div className="mx-3">Time:</div>
+                        </div>
+                      </CardContent>
+                      <CardContent className="grid gap-4">
+                        <div className=" flex items-center space-x-4 rounded-md border p-4">
+                          <div className="flex-1 space-y-1">
+                            <div className="text-sm font-medium leading-none">
+                              Activity:
+                            </div>
+                            <HeatMap
+                              value={value}
+                              width={600}
+                              style={{
+                                color: "#ad001d",
+                                "--rhm-rect-active": "red",
+                              }}
+                              startDate={new Date("2016/01/01")}
+                              panelColors={{
+                                0: "#f4decd",
+                                2: "#e4b293",
+                                4: "#d48462",
+                                10: "#c2533a",
+                                20: "#ad001d",
+                                30: "#000",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
                     </div>
-                  </CardContent>
+                  ) : (
+                    <div>
+                      <CardContent>
+                        <div className="flex items-center">
+                          <RotatingLines
+                            height="30"
+                            width="30"
+                            radius="9"
+                            color="black"
+                          />
+                          <div className="mx-3">Analysis in progress...</div>
+                        </div>
+                        <div className="flex items-center my-3">
+                          <div className="px-1">
+                            <CircleCheck color="#16A34A" />
+                          </div>
+                          <div className="mx-3">All systems normal</div>
+                        </div>
+                        <div className="flex items-center my-3">
+                          <div className="px-1">
+                            <CircleCheck color="#16A34A" />
+                          </div>
+                          <div className="mx-3">No abnormalities detected</div>
+                        </div>
+                      </CardContent>
+                      <CardContent className="grid gap-4">
+                        <div className=" flex items-center space-x-4 rounded-md border p-4">
+                          <div className="flex-1 space-y-1">
+                            <div className="text-sm font-medium leading-none">
+                              Activity:
+                            </div>
+                            <HeatMap
+                              value={value}
+                              width={600}
+                              style={{
+                                color: "#ad001d",
+                                "--rhm-rect-active": "red",
+                              }}
+                              startDate={new Date("2016/01/01")}
+                              panelColors={{
+                                0: "#f4decd",
+                                2: "#e4b293",
+                                4: "#d48462",
+                                10: "#c2533a",
+                                20: "#ad001d",
+                                30: "#000",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </div>
+                  )}
                 </Card>
               </div>
             </div>
