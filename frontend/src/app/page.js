@@ -41,7 +41,7 @@ export default function HomePage() {
                 alt="Hero"
                 className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
                 height="310"
-                src="/stock.jpeg"
+                src="/stock.jpg"
                 width="550"
               />
             </div>
