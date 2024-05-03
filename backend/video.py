@@ -150,7 +150,7 @@ def create_prompt(prompt_type: Literal["real_time", "deeper_analysis"], real_tim
                          f"This was the real-time analysis that you gave me: {real_time_output}."
 
         query_setup = "Now, generate a JSON dictionary for the detailed analysis and suggestions for this situation. "
-        query_detail = "I want you to give me the output as a JSON dictionary with keys deeper_analysis and suggestions. " \
+        query_detail = "I want you to give me the output as a JSON dictionary with keys deeper_analysis and events. " \
                        "deeper_analysis is a dictionary with key as a number and value as a dictionary with keys description and time. " \
                        "suggestions is a dictionary with key as a number and value as a string representing the suggestion. " \
                        "Do not use markdown, any other formatting, or any other commentary in your answer. \n" \
@@ -194,8 +194,9 @@ def make_request(prompt: str, files: list[File]) -> list:
 def make_request_for_summary(prompt: str, reports: list[dict]) -> list:
     request = [prompt]
     for report in reports:
-        request.append(report.time)
-        request.append(report.description)
+        print(report)
+        request.append(report["time"])
+        request.append(" ".join([sentence for sentence in report["description"]]))
     return request
 
 
@@ -293,7 +294,7 @@ def call_gemini_for_summary(reports: list[dict]) -> str:
         # If the finish reason was SAFETY, the safety ratings have more details.
         print(response.candidates[0].safety_ratings)
 
-
+    print(response.text)
     return response.text
 
 
