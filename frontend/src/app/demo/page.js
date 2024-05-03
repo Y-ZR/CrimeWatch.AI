@@ -186,8 +186,7 @@ const Demo = () => {
               <div className="space-y-2">
                 <div className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
                   <video
-                    controls
-                    autoplay
+                    autoPlay={true}
                     muted
                     playsInline
                     ref={videoRef}
