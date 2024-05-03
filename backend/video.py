@@ -150,7 +150,7 @@ def create_prompt(prompt_type: Literal["real_time", "deeper_analysis"], real_tim
                          f"This was the real-time analysis that you gave me: {real_time_output}."
 
         query_setup = "Now, generate a JSON dictionary for the detailed analysis and suggestions for this situation. "
-        query_detail = "I want you to give me the output as a JSON dictionary with keys deeper_analysis and events. " \
+        query_detail = "I want you to give me the output as a JSON dictionary with keys deeper_analysis and suggestions. " \
                        "deeper_analysis is a dictionary with key as a number and value as a dictionary with keys description and time. " \
                        "suggestions is a dictionary with key as a number and value as a string representing the suggestion. " \
                        "Do not use markdown, any other formatting, or any other commentary in your answer. \n" \
