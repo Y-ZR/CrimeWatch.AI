@@ -140,20 +140,84 @@ export default function HomePage() {
                   at a CAGR of 9.2% from 2023 to 2028.
                 </p>
                 <p className="text-sm italic text-gray-500 text-right w-full">
-                  Source: 
-                    <Link 
-                      href="https://www.securityworldmarket.com/uk/News/Business-News/video-surveillance-market-predicted-to-reach-over-83-billion-by-20281?utm_source=newsletter-swm-uk&utm_medium=email&utm_campaign=wk&utm_source=360Works%20CloudMail&utm_medium=email&utm_campaign=SWM%20UK%20230829" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="underline text-blue-500 hover:text-blue-800">
-                      Security World Market
-                    </Link>
+                  Source: <Link 
+                            href="https://www.securityworldmarket.com/uk/News/Business-News/video-surveillance-market-predicted-to-reach-over-83-billion-by-20281?utm_source=newsletter-swm-uk&utm_medium=email&utm_campaign=wk&utm_source=360Works%20CloudMail&utm_medium=email&utm_campaign=SWM%20UK%20230829" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="underline text-blue-500 hover:text-blue-800">
+                            Security World Market
+                          </Link>
                 </p>
               </div>
             </div>
           </div>
         </section>
-      
+
+        <section className="min-h-screen w-full flex items-center">
+          <div className="container grid gap-20 sm:px-10 md:grid-cols-2">
+            <div className="flex flex-col space-y-4 items-center justify-center">
+              <div className="flex flex-col items-start space-y-4">
+                <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm dark:bg-gray-800 text-green-800">
+                  Security Trends
+                </div>
+                <h2 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text_5xl xl:text-[3.4rem] 2xl:text-[3.75rem]">
+                  Escalating Security Concerns
+                </h2>
+                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl/relaxed dark:text-gray-400">
+                  In 2023, amidst escalating security concerns, particularly within retail sectors, 
+                  the state allocated a substantial $267 million to reinforce police departments' capabilities. 
+                </p>
+                <p className="text-sm italic text-gray-500">
+                  Source: <Link 
+                            href="https://www.gov.ca.gov/2024/02/28/orc-survey-result/" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="underline text-blue-500 hover:text-blue-800">
+                            Office of the Governor of California
+                          </Link>
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-center ">
+              <img
+                alt="Security Trends"
+                className="mx-auto overflow-hidden rounded-xl object-fill object-center w-[500px] h-[500px]"
+                src="/security.gif"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="min-h-screen w-full flex items-center">
+          <div className="container grid gap-20 sm:px-10 md:grid-cols-2">
+            <div className="flex justify-center space-y-4">
+                <LineChart className="aspect-[2/1]" />
+            </div>
+            <div className="flex flex-col space-y-4 items-center justify-center">
+              <div className="flex flex-col items-start space-y-4">
+                <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm dark:bg-gray-800 text-green-800">
+                  Crime Statistics
+                </div>
+                <h2 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text_5xl xl:text-[3.4rem] 2xl:text-[3.75rem]">
+                  Crime Statistics
+                </h2>
+                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl/relaxed dark:text-gray-400">
+                  In 2023 alone, the city recorded 53 homicides, 31,428 larceny thefts, 
+                  6,571 motor vehicle thefts, and 2,693 robberies, underscoring the gravity of the situation.
+                </p>
+                <p className="text-sm italic text-gray-500 text-right w-full">
+                  Source: <Link 
+                            href="https://www.securityworldmarket.com/uk/News/Business-News/video-surveillance-market-predicted-to-reach-over-83-billion-by-20281?utm_source=newsletter-swm-uk&utm_medium=email&utm_campaign=wk&utm_source=360Works%20CloudMail&utm_medium=email&utm_campaign=SWM%20UK%20230829" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="underline text-blue-500 hover:text-blue-800">
+                            Security World Market
+                          </Link>
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <section className="min-h-screen w-full flex items-center border-b-2">
           <div className="container grid gap-10 sm:px-10 md:gap-16 md:grid-cols-2">
