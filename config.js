@@ -1,0 +1,1 @@
+export const HOSTED_GOOGLE_API_URL = "13.78.161.149:8000/";

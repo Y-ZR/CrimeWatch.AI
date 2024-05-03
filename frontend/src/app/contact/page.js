@@ -1,10 +1,11 @@
 import React from "react";
 import { Header } from "@/components/ui/Header";
+import { Footer } from "@/components/ui/Footer";
 import { Form } from "@/components/ui/Form";
 
 const ContactPage = () => {
   return (
-    <div>
+    <div className="relative">
       <Header />
       <section className="min-h-screen w-full flex items-center">
         <div className="container px-4 md:px-6">
@@ -26,6 +27,7 @@ const ContactPage = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };
