@@ -153,7 +153,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="min-h-screen w-full flex items-center">
+        <section className="min-h-screen w-full flex items-center bg-gray-100">
           <div className="container grid gap-20 sm:px-10 md:grid-cols-2">
             <div className="flex flex-col space-y-4 items-center justify-center">
               <div className="flex flex-col items-start space-y-4">
@@ -190,13 +190,17 @@ export default function HomePage() {
 
         <section className="min-h-screen w-full flex items-center">
           <div className="container grid gap-20 sm:px-10 md:grid-cols-2">
-            <div className="flex justify-center space-y-4">
-                <LineChart className="aspect-[2/1]" />
+            <div className="flex justify-center space-y-4 mr-10">
+                <img
+                  alt="Crime Statistics"
+                  className="mx-auto overflow-hidden rounded-xl object-fill object-center"
+                  src="/crime.jpg"
+                />
             </div>
             <div className="flex flex-col space-y-4 items-center justify-center">
               <div className="flex flex-col items-start space-y-4">
                 <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm dark:bg-gray-800 text-green-800">
-                  Crime Statistics
+                  Safety Concerns
                 </div>
                 <h2 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text_5xl xl:text-[3.4rem] 2xl:text-[3.75rem]">
                   Crime Statistics
@@ -207,11 +211,11 @@ export default function HomePage() {
                 </p>
                 <p className="text-sm italic text-gray-500 text-right w-full">
                   Source: <Link 
-                            href="https://www.securityworldmarket.com/uk/News/Business-News/video-surveillance-market-predicted-to-reach-over-83-billion-by-20281?utm_source=newsletter-swm-uk&utm_medium=email&utm_campaign=wk&utm_source=360Works%20CloudMail&utm_medium=email&utm_campaign=SWM%20UK%20230829" 
+                            href="https://counciloncj.org/year-end-2023-crime-trends/" 
                             target="_blank" 
                             rel="noopener noreferrer" 
                             className="underline text-blue-500 hover:text-blue-800">
-                            Security World Market
+                            Council on Criminal Justice
                           </Link>
                 </p>
               </div>
@@ -219,7 +223,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="min-h-screen w-full flex items-center border-b-2">
+        <section className="min-h-screen w-full flex items-center border-b-2 bg-gray-100">
           <div className="container grid gap-10 sm:px-10 md:gap-16 md:grid-cols-2">
             <div className="flex space-y-4 items-center">
               <h2 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text_5xl xl:text-[3.4rem] 2xl:text-[3.75rem]">
