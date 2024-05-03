@@ -32,6 +32,7 @@ const Demo = () => {
   const canvasRef = useRef(null);
   const [generationComplete, setGenerationComplete] = useState(false);
   const [analysis, setAnalysis] = useState("");
+  const [timestamp, setTimestamp] = useState("");
   const [isPaused, setIsPaused] = useState(false);
 
   // hardcoded data (to be removed)
@@ -62,7 +63,7 @@ const Demo = () => {
         videoRef.current.pause();
         console.log("Video paused");
       }
-    }, 6000); // hardcoded time (to pause video)
+    }, 15000); // hardcoded time (to pause video)
     return () => clearTimeout(timer);
   }, []);
 
@@ -103,21 +104,32 @@ const Demo = () => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
   var typewriterIdx = 1;
-  async function typeWriterEffect(str) {
-    if (typewriterIdx > str.length) {
-      setGenerationComplete(true);
-      typewriterIdx = 1;
-      return;
-    }
+  async function typeWriterEffect(str, updateFunction, delayMs = 50) {
+    let localIdx = 0; // Local index for each call to typeWriterEffect
 
-    setAnalysis(str.slice(0, typewriterIdx));
-    typewriterIdx++;
-    await delay(50);
-    typeWriterEffect(str);
+    return new Promise((resolve) => {
+      function doType() {
+        if (localIdx > str.length) {
+          resolve(); // Resolve promise when finished
+          return;
+        }
+
+        updateFunction(str.slice(0, localIdx)); // Use passed function to update UI
+        localIdx++;
+        setTimeout(doType, delayMs); // Continue after a delay
+      }
+
+      doType();
+    });
   }
+
   const handleViewAnalysis = async () => {
     const firstDescription = data.events["1"].description;
-    typeWriterEffect(firstDescription);
+    const firstTimestamp = data.events["1"].time;
+
+    // Use different update functions for description and timestamp
+    await typeWriterEffect(firstDescription, setAnalysis);
+    await typeWriterEffect(firstTimestamp, setTimestamp);
   };
 
   const handlePause = () => {
@@ -173,9 +185,7 @@ const Demo = () => {
                         Suspicious Activity Detected
                       </AlertTitle>
                     </div>
-                    <Button className="h-7" onClick={handleViewAnalysis}>
-                      View
-                    </Button>
+                    <Button className="h-7">View details</Button>
                   </Alert>
                 ) : (
                   <Alert className="flex items-center">
@@ -200,52 +210,41 @@ const Demo = () => {
                           </div>
                           <div className="mx-3">Description: </div>
                           <Textarea
-                            variant="faded"
-                            labelPlacement="outside"
+                            isReadOnly
                             value={analysis}
                             classNames={{
-                              base: ["w-full", "h-full"],
-                              input: [
-                                "text-zinc-600",
-                                "text-xs",
-                                "border-black",
-                              ],
-                              inputWrapper: "",
+                              base: "w-full",
+                              input: ["text-zinc-600", "text-xs"],
                             }}
                             onValueChange={(analysis) => setAnalysis(analysis)}
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                            }}
                           />
                         </div>
-                        <div className="flex items-center my-3">
-                          <div className="px-1">
+                        <div className="flex items-center mt-10">
+                          <div className="px-1 my-5">
                             <Clock3 color="#FF0000" />
                           </div>
-                          <div className="mx-3">Time:</div>
-                        </div>
-                      </CardContent>
-                      <CardContent className="grid gap-4">
-                        <div className=" flex items-center space-x-4 rounded-md border p-4">
-                          <div className="flex-1 space-y-1">
-                            <div className="text-sm font-medium leading-none">
-                              Activity:
-                            </div>
-                            <HeatMap
-                              value={value}
-                              width={600}
-                              style={{
-                                color: "#ad001d",
-                                "--rhm-rect-active": "red",
-                              }}
-                              startDate={new Date("2016/01/01")}
-                              panelColors={{
-                                0: "#f4decd",
-                                2: "#e4b293",
-                                4: "#d48462",
-                                10: "#c2533a",
-                                20: "#ad001d",
-                                30: "#000",
-                              }}
-                            />
-                          </div>
+                          <div className="mx-3">Timestamp: </div>
+                          <Textarea
+                            isReadOnly
+                            value={timestamp}
+                            classNames={{
+                              base: "w-full border-none",
+                              input: [
+                                "text-zinc-600",
+                                "text-s",
+                                "bg-transparent",
+                                "border-none",
+                              ],
+                            }}
+                            onValueChange={(timestamp) =>
+                              setTimestamp(timestamp)
+                            }
+                            style={{ background: "transparent" }}
+                          />
                         </div>
                       </CardContent>
                     </div>
@@ -274,34 +273,33 @@ const Demo = () => {
                           <div className="mx-3">No abnormalities detected</div>
                         </div>
                       </CardContent>
-                      <CardContent className="grid gap-4">
-                        <div className=" flex items-center space-x-4 rounded-md border p-4">
-                          <div className="flex-1 space-y-1">
-                            <div className="text-sm font-medium leading-none">
-                              Activity:
-                            </div>
-                            <HeatMap
-                              value={value}
-                              width={600}
-                              style={{
-                                color: "#ad001d",
-                                "--rhm-rect-active": "red",
-                              }}
-                              startDate={new Date("2016/01/01")}
-                              panelColors={{
-                                0: "#f4decd",
-                                2: "#e4b293",
-                                4: "#d48462",
-                                10: "#c2533a",
-                                20: "#ad001d",
-                                30: "#000",
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </CardContent>
                     </div>
                   )}
+                  <CardContent className="grid gap-4">
+                    <div className=" flex items-center space-x-4 rounded-md border p-4">
+                      <div className="flex-1 space-y-1">
+                        <div className="text-sm font-medium leading-none">
+                          Activity:
+                        </div>
+                        <HeatMap
+                          value={value}
+                          width={600}
+                          style={{
+                            color: "#ad001d",
+                            "--rhm-rect-active": "red",
+                          }}
+                          startDate={new Date("2016/01/01")}
+                          panelColors={{
+                            0: "#008000",
+                            2: "#9ACD32",
+                            4: "#FFBF00",
+                            10: "#FF4500",
+                            20: "#FF0000",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
                 </Card>
               </div>
             </div>
