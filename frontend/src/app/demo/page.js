@@ -133,7 +133,7 @@ const Demo = () => {
   };
 
   const handlePause = () => {
-    if (!videoRef.current.ended) {e
+    if (!videoRef.current.ended) {
       setIsPaused(true);
     }
     console.log("Video has been paused.");
@@ -153,7 +153,7 @@ const Demo = () => {
       <Header />
       <section className="min-h-screen w-full flex items-center">
         <div className="container px-24 md:px-22">
-          <div className="grid gap-20 grid-cols-[2fr_3fr]">
+          <div className="grid gap-6 grid-cols-[1fr_1fr]">
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
                 <div className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
@@ -168,7 +168,6 @@ const Demo = () => {
                     }}
                     onPause={handlePause}
                     onPlay={handlePlay}
-                    controls={false}  
                   >
                     <source src="/shoplifting.mp4" type="video/mp4" />
                   </video>
