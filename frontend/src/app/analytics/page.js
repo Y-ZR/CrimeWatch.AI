@@ -56,6 +56,41 @@ const crimes = [
 const AnalyticsPage = () => {
   const [modalShow, setModalShow] = useState(false);
   const [selectedCrime, setSelectedCrime] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [summaryText, setSummaryText] = useState("");
+  const [displaySummary, setDisplaySummary] = useState("");
+  const [isTyping, setIsTyping] = useState(false);  
+
+  const fullSummary = `
+    <p><strong>Crime Report Summary</strong></p>
+    <p>This report summarizes a series of crimes occurring between March 30th, 2024 and April 6th, 2024, based on descriptions from various sources such as witness statements and security footage.</p>
+    <br />
+    <p><strong><u>Recurring Incidents</strong></u></p>
+    <ul>
+      <li><strong>Pickpocketing:</strong> Two separate incidents of pickpocketing targeted tourists in crowded areas. Suspects employed distraction techniques, such as bumping into victims or asking for directions, while accomplices stole wallets and valuables.</li>
+      <li><strong>Public Nuisance:</strong> A group of individuals caused a disturbance in the central park area, engaging in loud music, public alcohol consumption, and aggressive behavior towards others.</li>
+    </ul>
+    <br />
+    <p><strong><u>Other Notable Crimes</u></strong></p>
+    <ul>
+      <li><strong>Assault:</strong> Two separate incidents of pickpocketing targeted tourists in crowded areas. Suspects employed distraction techniques, such as bumping into victims or asking for directions, while accomplices stole wallets and valuables.</li>
+      <li><strong>Theft:</strong> A bicycle was stolen from the shopping mall parking area. Security footage captured the suspect cutting the bike lock and fleeing the scene.</li>
+      <li><strong>Vandalism:</strong> A newly renovated storefront was vandalized with spray-painted graffiti, causing significant property damage. Street cameras recorded the incident.</li>
+      <li><strong>Robbery:</strong> A masked individual armed with a knife robbed a convenience store, taking cash and cigarettes before escaping on foot.</li>
+    </ul>
+    <br />
+    <p><strong><u>Recommendations</strong></u></p>
+    <ul>
+      <li><strong>Increased Security Presence:</strong> More patrols in crowded tourist areas and the central park could deter pickpocketing and public nuisance activities.</li>
+      <li><strong>Public Awareness Campaigns:</strong> Educating the public about common pickpocket tactics and encouraging vigilance can help prevent future incidents.</li>
+      <li><strong>Improved Security Measures:</strong> Enhanced security measures, such as additional cameras and improved lighting, may deter theft and vandalism.</li>
+      <li><strong>Investigation and Apprehension:</strong> Continued investigation into the assault, robbery, and vandalism cases is crucial to identify and apprehend the suspects.</li>
+    </ul>
+    <br />
+    <p><strong><u>Conclusion</strong></u></p>
+    <p>Overall, these incidents highlight the need for increased vigilance and security measures in public spaces. Addressing the recurring issues of pickpocketing and public nuisance requires a multi-pronged approach involving law enforcement, public awareness, and community engagement.</p>
+  `;
+
 
 
   const handleCardClick = (crime) => {
@@ -63,6 +98,32 @@ const AnalyticsPage = () => {
     setModalShow(true);
   };
 
+  const handleGenerateSummary = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setIsTyping(true);
+      setDisplaySummary("");  
+      setSummaryText(fullSummary);
+      displayTextByLetter(fullSummary, 0);
+    }, 2000);
+  };
+
+
+  const chunkSize = 3;
+  const displayTextByLetter = (text, index) => {
+    if (index < text.length) {
+      const nextIndex = index + chunkSize;
+      const textToAdd = text.slice(index, nextIndex);
+      setTimeout(() => {
+        setDisplaySummary((prev) => prev + textToAdd);
+        displayTextByLetter(text, nextIndex);
+      }, 1);
+    } else {
+      setIsTyping(false);
+      setLoading(false);
+    }
+  };
 
 
   return (
@@ -88,17 +149,19 @@ const AnalyticsPage = () => {
           </div>
         </Card>
 
-        <Card className="p-6 pb-8 mt-10">
-          <div className="mb-8">
+        <Card className="p-6 pb-8 mt-10 mb-20">
+          <div className="">
             <h1 className="text-3xl font-bold">Crime Reports Summary</h1>
             <p className="text-gray-500 dark:text-gray-400">
               Generate a summary of the crime reports above, 
               using Gemini, which includes the most common type of crime, the trend of crime reports, and more.
             </p>
           </div>
-          <Button>Generate Summary</Button>
+          <div className="text-gray-700 my-4 font-semibold" dangerouslySetInnerHTML={{ __html: displaySummary }}></div>
+          <Button onClick={handleGenerateSummary} disabled={loading || isTyping}>
+            {loading || isTyping ? "Generating..." : "Generate Summary"}
+          </Button>
         </Card>
-          
       </main>
 
       <Modal show={modalShow} onClose={() => setModalShow(false)} crime={selectedCrime} />
@@ -131,7 +194,6 @@ const Modal = ({ show, onClose, crime }) => {
         <div className="mt-4">
           <h4 className="text-lg font-semibold mb-2">Details of the Incident:</h4>
           <p className="text-gray-700 dark:text-gray-300">
-            {/* Assuming `crime.description` exists */}
             {crime.description || "No detailed description available."}
           </p>
         </div>
